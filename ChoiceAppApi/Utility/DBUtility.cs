@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
+using ChoiceAppApi.Data;
 using ChoiceAppApi.Model;
 
 namespace ChoiceAppApi.Utility
@@ -102,7 +104,62 @@ namespace ChoiceAppApi.Utility
 
         #region PostArray
 
-        
+        public static void PostArrayToDB(PageData[] pageDataArray)
+        {
+            using (SqlConnection conn = new SqlConnection(ConnectionString))
+            {
+                conn.Open();
+                if (conn.State == ConnectionState.Open)
+                {
+                    using (SqlCommand command = conn.CreateCommand())
+                    {
+                        int x = 7;
+                        int y = 8;
+                        int z = 9;
+                        int t = 10;
+                        int r = 11;
+                        int e = 12;
+                        int iterationNo = 6;
+
+                        foreach (PageData page in pageDataArray)
+                        {
+                            command.CommandText = "Insert into PageData values (" +
+                                                  $"@Para{x}, @Para{y}, @Para{z}, @Para{t}, @Para{r}, @Para{e})";
+                            command.Parameters.AddWithValue($"@Para{x}", page.PageID);
+                            command.Parameters.AddWithValue($"@Para{y}", page.PageTitle);
+                            command.Parameters.AddWithValue($"@Para{z}", page.PageDescription);
+                            command.Parameters.AddWithValue($"@Para{t}", page.Ending);
+                            command.Parameters.AddWithValue($"@Para{r}", page.Result);
+                            command.Parameters.AddWithValue($"@Para{e}", page.Victory);
+                            command.ExecuteNonQuery();
+
+                            foreach (ButtonData button in page.ButtonData)
+                            {
+                                command.CommandText = "Insert into ButtonData values (" +
+                                                      $"@Param{x}, @Param{y}, @Param{z}, @Param{t})";
+                                command.Parameters.AddWithValue($"@Param{x}", button.ButtonID);
+                                command.Parameters.AddWithValue($"@Param{y}", button.ButtonDescription);
+                                command.Parameters.AddWithValue($"@Param{z}", button.ButtonDestinationPage);
+                                command.Parameters.AddWithValue($"@Param{t}", page.PageID);
+                                command.ExecuteNonQuery();
+
+                                x += iterationNo;
+                                y += iterationNo;
+                                z += iterationNo;
+                                t += iterationNo;
+
+                            }
+
+                            r += iterationNo;
+                            e += iterationNo;
+
+                        }
+
+                    }
+                }
+            }
+        }
+
 
         #endregion
 
