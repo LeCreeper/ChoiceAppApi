@@ -18,11 +18,21 @@ namespace ChoiceAppApi.Controllers
         readonly PageDataArray  _pageDataArray = new PageDataArray();
         // GET: api/Pages
         [HttpGet]
-        public PageDataArray Get()
+        public PageData[] Get()
+        {
+            PageData[] PageData = DBUtility.GetPagesFromDatabase();
+            return PageData;
+        }
+
+        // GET: api/Pages
+        [HttpGet]
+        [Route("GetArray")]
+        public PageDataArray GetArray()
         {
             return _pageDataArray;
-            //return DBUtility.GetPagesFromDatabase();
+            
         }
+
 
         // GET: api/Pages/5
         [HttpGet("{id}", Name = "Get")]

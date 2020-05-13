@@ -13,10 +13,11 @@ namespace ChoiceAppApi.Utility
         private const string ConnectionString =
             @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=PageDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
 
-        private const string GET_PAGES = "SELECT * FROM PageData";
-        
+        #region GET ALL
 
-        public static List<PageData> GetPagesFromDatabase()
+        private const string GET_PAGES = "SELECT * FROM PageData";
+
+        public static PageData[] GetPagesFromDatabase()
         {
             List<PageData> PageList = new List<PageData>();
             using (SqlConnection conn = new SqlConnection(ConnectionString))
@@ -33,7 +34,9 @@ namespace ChoiceAppApi.Utility
                     reader.Close();
                 }
 
-                return PageList;
+                PageData[] pageArray = PageList.ToArray();
+
+                return pageArray;
 
             }
         }
@@ -53,17 +56,17 @@ namespace ChoiceAppApi.Utility
             pageData.Ending = reader.GetBoolean(3);
             pageData.Result = reader.GetBoolean(4);
             pageData.Victory = reader.GetBoolean(5);
-            //pageData.ButtonData = GetButtonData(pageData.PageID);
+            pageData.ButtonData = GetButtonData(pageData.PageID);
             return pageData;
 
         }
 
-        protected static List<ButtonData> GetButtonData(int pageID)
+        protected static ButtonData[] GetButtonData(int pageID)
         {
             List<ButtonData> ButtonList = new List<ButtonData>();
             using (SqlConnection conn = new SqlConnection(ConnectionString))
             {
-                
+
                 using (SqlCommand command = new SqlCommand($"SELECT * FROM ButtonData WHERE ButtonData.PageData = {pageID}", conn))
                 {
                     conn.Open();
@@ -72,12 +75,14 @@ namespace ChoiceAppApi.Utility
                     {
                         ButtonData buttonData = NextButtonData(reader);
                         ButtonList.Add(buttonData);
-                        
+
                     }
                     reader.Close();
                 }
 
-                return ButtonList;
+                ButtonData[] buttonArray = ButtonList.ToArray();
+
+                return buttonArray;
 
             }
 
@@ -92,6 +97,14 @@ namespace ChoiceAppApi.Utility
             return buttonData;
 
         }
+
+        #endregion
+
+        #region PostArray
+
+        
+
+        #endregion
 
     }
 }
