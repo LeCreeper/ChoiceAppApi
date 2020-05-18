@@ -43,8 +43,10 @@ namespace ChoiceAppApi.Controllers
 
         // POST: api/Pages
         [HttpPost]
-        public void Post([FromBody] string value)
+        [Route("PostArray")]
+        public void Post()
         {
+            DBUtility.PostArrayToDB(_pageDataArray.PageData);
         }
 
         // PUT: api/Pages/5
