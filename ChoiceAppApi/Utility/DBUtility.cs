@@ -13,16 +13,33 @@ namespace ChoiceAppApi.Utility
     {
         
         private const string ConnectionString =
-            @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=PageDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+            @"Data Source=(localdb)\MSSQLLocalDB; "+
+            "Initial Catalog=PageDB;"+
+            "Integrated Security=True;"+
+            "Connect Timeout=30;Encrypt=False;"+
+            "TrustServerCertificate=False;"+
+            "ApplicationIntent=ReadWrite;"+
+            "MultiSubnetFailover=False";
+        
+        //Initial Catalog=PageDB; skal indsættes manuelt.
+        private const string AWSConnectionString =
+            @"Data Source=database-1.cadjkr5f0vby.eu-north-1.rds.amazonaws.com,1433;" +
+            "Initial Catalog=PageDB;" +
+            "User ID=admin; " + 
+            "Password=password; "+
+            "Connect Timeout=30;Encrypt=False;" +
+            "TrustServerCertificate=False; " +
+            "ApplicationIntent=ReadWrite;" +
+            "MultiSubnetFailover=False";
 
         #region GET ALL
 
-        private const string GET_PAGES = "SELECT * FROM PageData";
+        private const string GET_PAGES = "select * from PageData";
 
         public static PageData[] GetPagesFromDatabase()
         {
             List<PageData> PageList = new List<PageData>();
-            using (SqlConnection conn = new SqlConnection(ConnectionString))
+            using (SqlConnection conn = new SqlConnection(AWSConnectionString))
             {
                 using (SqlCommand command = new SqlCommand(GET_PAGES, conn))
                 {
@@ -66,7 +83,7 @@ namespace ChoiceAppApi.Utility
         protected static ButtonData[] GetButtonData(int pageID)
         {
             List<ButtonData> ButtonList = new List<ButtonData>();
-            using (SqlConnection conn = new SqlConnection(ConnectionString))
+            using (SqlConnection conn = new SqlConnection(AWSConnectionString)) //TODO change to awsDatabase connection string
             {
 
                 using (SqlCommand command = new SqlCommand($"SELECT * FROM ButtonData WHERE ButtonData.PageData = {pageID}", conn))
@@ -106,7 +123,7 @@ namespace ChoiceAppApi.Utility
 
         public static void PostArrayToDB(PageData[] pageDataArray)
         {
-            using (SqlConnection conn = new SqlConnection(ConnectionString))
+            using (SqlConnection conn = new SqlConnection(AWSConnectionString))
             {
                 conn.Open();
                 if (conn.State == ConnectionState.Open)
